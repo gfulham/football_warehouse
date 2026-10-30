@@ -1,0 +1,10 @@
+show warehouses;
+
+show tables;
+
+USE DATABASE FANTASY_FOOTBALL;
+USE SCHEMA DFS; 
+drop table if exists FFA_RAW_PROJECTIONS;
+
+ALTER SCHEMA DFS RENAME TO RAW;
+

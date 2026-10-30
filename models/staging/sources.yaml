@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw
+    database: FANTASY_FOOTBALL
+    schema: RAW
+
+    tables:
+      - name: ffa_projections
+      - name: dk_salaries
+      - name: nfl_teams
+      - name: weather_forecast
+      
