@@ -14,8 +14,6 @@ cursor.execute("SELECT CURRENT_VERSION()")
 print(cursor.fetchone())
 
 
-# %%
-
 files = glob.glob(r"C:\Users\onlyu\OneDrive\Coding_Projects\Fantasy_Football\data\vegas_odds\*nfl_team_odds*.csv")
 #
 for file_path in files:
@@ -26,18 +24,13 @@ for file_path in files:
     cursor.execute(f"PUT file://{file_path} @fantasy_football.raw.ffa_stage OVERWRITE = TRUE")
 
 
-# %%
-
 # See the staged files
-print(cursor.execute("LIST @fantasy_football.raw.ffa_stage;").fetchall())
+#print(cursor.execute("LIST @fantasy_football.raw.ffa_stage;").fetchall())
 
-
-# %%
 cursor.execute("drop table if exists fantasy_football.raw.nfl_team_odds;")
 
-print(cursor.fetchall())
+#print(cursor.fetchall())
 
-# %%
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS fantasy_football.raw.nfl_team_odds (
@@ -54,7 +47,7 @@ cursor.execute("""
     );
 """)
 
-print(cursor.fetchall())
+#print(cursor.fetchall())
 
 
 # %%
@@ -71,4 +64,4 @@ cursor.execute("""
     ON_ERROR = 'CONTINUE'
 """)
 
-print(cursor.fetchall())
+#print(cursor.fetchall())
