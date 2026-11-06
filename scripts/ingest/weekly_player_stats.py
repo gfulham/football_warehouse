@@ -75,7 +75,7 @@ current_year = datetime.now().year
 # 2019–2021: Weeks 1–16
 expected_2019_2021 = pd.MultiIndex.from_product(
     [range(2019, 2022), range(1, 18)],
-    names=["SEASON", "WEEK"]
+    names=["SEASON", "WEEK"],
 ).to_frame(index=False)
 
 # 2022–2025: Weeks 1–18
