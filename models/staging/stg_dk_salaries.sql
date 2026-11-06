@@ -1,8 +1,13 @@
 SELECT  
-CAST(date as DATE) as Date,
-WEEK,
+TO_CHAR(
+        TO_DATE(
+            REGEXP_SUBSTR("GAME_INFO", '[0-9]{2}/[0-9]{2}/[0-9]{4}'), 
+            'MM/DD/YYYY'    
+        ),
+        'YYYY-MM-DD'
+    ) AS WEEK,
 POSITION,
-NAME,
+TRIM(NAME) AS NAME,
 LOWER(
         TRIM(
             REGEXP_REPLACE(
@@ -18,9 +23,9 @@ LOWER(
         )
     ) AS PLAYER_NAME_CLEAN,
 ID AS DK_ID,
-"Roster Position" AS ROSTER_POSITION,
+ROSTER_POSITION,
 TEAMABBREV AS TEAM,
 CAST(SALARY AS NUMBER) AS SALARY,
-"Game Info" AS GAME_INFO,
+GAME_INFO,
 STATUS
 from {{ source('raw','dk_salaries') }}
