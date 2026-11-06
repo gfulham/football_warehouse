@@ -10,4 +10,6 @@ sources:
       - name: dk_salaries
       - name: nfl_teams
       - name: weather_forecast
+      - name: weekly_player_stats
+      - name: nfl_team_odds
       
