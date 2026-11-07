@@ -3,12 +3,15 @@
 
 # %%
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import requests
 
 # %%
 BASE_URL = "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds"
 
-API_KEY = "0052b4345f4731c48e71bd8f621c9c76"
+API_KEY = os.getenv("THE_ODDS_API_KEY")
 
 query_params = {
     "oddsFormat": "american",
