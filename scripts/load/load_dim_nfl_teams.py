@@ -1,5 +1,6 @@
 import snowflake.connector
 import glob
+from pathlib import Path
 
 conn = snowflake.connector.connect(
     connection_name="whatever"
@@ -10,7 +11,12 @@ cursor = conn.cursor()
 cursor.execute("SELECT CURRENT_VERSION()")
 print(cursor.fetchone())
 
-file_path = r"C:\Users\onlyu\OneDrive\Coding_Projects\Fantasy_Football\data\dim_nfl_teams.csv"
+Current_path = Path.cwd()
+#print(Current_path)
+Current_path = Current_path.parent
+#print(Current_path)
+
+file_path = Current_path / "data" / "dim_nfl_teams.csv"
 
 cursor.execute(f"PUT file://{file_path} @fantasy_football.raw.ffa_stage OVERWRITE = TRUE")
 

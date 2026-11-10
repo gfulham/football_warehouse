@@ -1,4 +1,7 @@
 """
+The data is sourced from a manual download from Draft Kings. 
+There is no web-scraping element yet, just a glob through local csv files
+
 Steps in the script:
 1. Connect to Snowflake
 2. Create the table if it doesn't exist
