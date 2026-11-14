@@ -1,7 +1,7 @@
 {{ config(materialized='table') }}
 
 SELECT * FROM {{ ref('mart_player_historical') }}
-WHERE WEEK_NUMBER = (
-    SELECT MAX(WEEK_NUMBER)
+WHERE WEEK = (
+    SELECT MAX(WEEK)
     FROM {{ ref('mart_player_historical') }}
 )
