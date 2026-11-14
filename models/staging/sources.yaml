@@ -9,7 +9,7 @@ sources:
       - name: ffa_projections
       - name: dk_salaries
       - name: nfl_teams
-      - name: weather_forecast
+      - name: weather
       - name: weekly_player_stats
       - name: nfl_odds_json
       
