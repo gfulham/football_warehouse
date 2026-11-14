@@ -37,6 +37,9 @@ models:
     staging:
       +schema: staging
 
+    intermediate:
+      +schema: intermediate 
+
     core:
       +schema: core
 
