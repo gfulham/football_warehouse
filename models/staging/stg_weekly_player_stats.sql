@@ -18,6 +18,5 @@ SELECT
         + CASE WHEN PASSING_YARDS >= 300 THEN 3 ELSE 0 END
         AS DRAFT_KINGS_POINTS
 FROM
-    FANTASY_FOOTBALL.RAW.WEEKLY_PLAYER_STATS 
+{{ source('raw','weekly_player_stats') }}
 WHERE POSITION IN ('QB','RB','WR','TE')
-;
