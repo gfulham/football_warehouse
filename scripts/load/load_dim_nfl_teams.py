@@ -16,7 +16,7 @@ Current_path = Path.cwd()
 Current_path = Current_path.parent
 #print(Current_path)
 
-file_path = Current_path / "data" / "dim_nfl_teams.csv"
+file_path = Current_path / "data" / "dimensional" /"dim_nfl_teams_2026.csv"
 
 cursor.execute(f"PUT file://{file_path} @fantasy_football.raw.ffa_stage OVERWRITE = TRUE")
 
@@ -26,7 +26,7 @@ print(cursor.execute("LIST @fantasy_football.raw.ffa_stage;").fetchall())
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS fantasy_football.raw.nfl_teams (
         Team VARCHAR,
-        Abbreviation VARCHAR,
+        Team_Abbreviation VARCHAR,
         City VARCHAR,
         State VARCHAR,
         Conference VARCHAR,
