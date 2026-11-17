@@ -5,14 +5,20 @@ SELECT
     d.player_name_clean,
     dks.year,
     dks.week,
-    dks.week_number AS NFL_WEEK_NUMBER,
+    dks.nfl_week_number,
     dks.team_abbreviation,
     dks.salary,
     dks.status,
     ffa.projection,
-    ito.location,
-    ito.team_favored,
-    ito.team_odds,
+    fto.bookmaker,
+    fto.location,
+    fto.moneyline,
+    fto.spread,
+    fto.spread_odds,
+    fto.over_under,
+    fto.over_odds,
+    fto.under_odds,
+    fto.team_favored,
     CASE
         WHEN dks.salary > 0
         THEN (ffa.projection / dks.salary) * 1000
@@ -28,9 +34,11 @@ LEFT JOIN {{ ref('stg_ffa_projections') }} ffa
     ON ffa.player_name_clean = dks.player_name_clean
     AND ffa.week_date_sunday = dks.week
 
-LEFT JOIN {{ ref('intermediate_team_odds') }} ito
-    ON ito.nfl_week_number = dks.week_number
-    AND ito.year = dks.year
-    AND ito.TEAM_ABBREVIATION = dks.team_abbreviation
+LEFT JOIN {{ ref('fact_team_odds') }} fto
+    ON fto.nfl_week_number = dks.nfl_week_number
+    AND fto.year = dks.year
+    AND fto.TEAM_ABBREVIATION = dks.team_abbreviation
+
+
 
 

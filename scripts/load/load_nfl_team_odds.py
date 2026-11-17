@@ -20,7 +20,8 @@ query_params = {
     "oddsFormat": "american",
     #"sport_key": "americanfootball_nfl",
     "regions": "us",
-    "apiKey": API_KEY
+    "apiKey": API_KEY,
+    "markets": "h2h,spreads,totals"
 }
 
 response = requests.get(BASE_URL, params=query_params)

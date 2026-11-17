@@ -1,0 +1,39 @@
+SELECT  
+dt.TEAM_KEY,
+stg_t.TEAM,
+dt.TEAM_ABBREVIATION,
+dt.CITY,
+dt.STATE,
+stg_t.LOCATION,
+stg_t.GAME_ID,
+stg_t.GAME_TIME,
+YEAR(GAME_TIME) AS YEAR,
+WEEKOFYEAR(DATEADD(day,-1, GAME_TIME)) -36 AS NFL_WEEK_NUMBER,
+stg_t.BOOKMAKER,
+stg_t.MONEYLINE,
+stg_t.SPREAD,
+stg_t.SPREAD_ODDS,
+stg_t.OVER_UNDER,
+stg_t.OVER_ODDS,
+stg_t.UNDER_ODDS,
+
+CASE 
+    WHEN stg_t.MONEYLINE < -120 THEN 'FAVORITE'
+    WHEN stg_t.MONEYLINE >= -120 
+        AND stg_t.MONEYLINE <= 120 THEN 'SPLIT'
+    ELSE 'UNDERDOG'
+END AS TEAM_FAVORED,
+
+CASE
+    WHEN OVER_UNDER IS NOT NULL THEN
+        DENSE_RANK() OVER (
+            PARTITION BY YEAR, NFL_WEEK_NUMBER
+            ORDER BY OVER_UNDER DESC
+        )
+END AS OVER_UNDER_RANK
+
+FROM {{ ref('intermediate_team_odds') }} stg_t
+
+LEFT JOIN {{ ref('dim_nfl_teams')}} dt 
+    ON dt.team = stg_t.team
+

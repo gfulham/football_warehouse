@@ -1,9 +1,10 @@
-SELECT A.*,
-CASE 
-    WHEN TEAM_ODDS < -120 THEN 'FAVORITE'
-    WHEN TEAM_ODDS >= -120 AND TEAM_ODDS <= 120 THEN 'SPLIT'
-ELSE 'UNDERDOG'
-END AS TEAM_FAVORED  
+SELECT A.*
+--CASE 
+--    WHEN MARKET = 'h2h' AND PRICE < -120 THEN 'FAVORITE'
+--    WHEN MARKET = 'h2h' AND PRICE >= -120 
+--        AND MARKET = 'h2h' AND PRICE <= 120 THEN 'SPLIT'
+--ELSE 'UNDERDOG'
+--END AS TEAM_FAVORED  
 
 
 FROM (
@@ -16,39 +17,32 @@ FROM (
         'HOME' AS LOCATION,
 
         B.VALUE:key::VARCHAR AS BOOKMAKER,
-        --M.VALUE:key::VARCHAR AS MARKET,
+        M.VALUE:key::STRING AS MARKET,
+        O.VALUE:name::STRING AS OUTCOME,
 
-        --O.VALUE:name::VARCHAR AS TEAM,
-        --O.VALUE:price::NUMBER AS ODDS,
-            CASE 
-                WHEN M.VALUE:outcomes[0]:name::VARCHAR = PAYLOAD:home_team 
-                THEN M.VALUE:outcomes[0]:price::NUMBER
-                ELSE M.VALUE:outcomes[1]:price::NUMBER
-            END AS TEAM_ODDS,
-    
+        O.VALUE:point::FLOAT AS POINT,
+        O.VALUE:price::FLOAT AS PRICE
 
-
-        M.VALUE:outcomes[0]:name::VARCHAR AS TEAN_1,
-        M.VALUE:outcomes[0]:price::NUMBER AS TEAM_1_ODDS,
-        M.VALUE:outcomes[1]:name::VARCHAR AS UNDERDOG_TEAM,
-        M.VALUE:outcomes[1]:price::NUMBER AS UNDERDOG_ODDS
     FROM {{ source('raw','nfl_odds_json') }},
     LATERAL FLATTEN(INPUT => PAYLOAD:bookmakers) B,
     LATERAL FLATTEN(INPUT => B.VALUE:markets) M,
     LATERAL FLATTEN(INPUT => M.VALUE:outcomes) O
 
-    WHERE M.VALUE:key::VARCHAR = 'h2h'
+    -- WHERE M.VALUE:key::VARCHAR = 'h2h'
 
 ) A
 
 UNION ALL
 
-SELECT A.*,
-CASE 
-    WHEN TEAM_ODDS < -120 THEN 'FAVORITE'
-    WHEN TEAM_ODDS >= -120 AND TEAM_ODDS <= 120 THEN 'SPLIT'
-ELSE 'UNDERDOG'
-END AS TEAM_FAVORED  
+SELECT A.*
+--CASE 
+--    WHEN MARKET = 'h2h' AND PRICE < -120 THEN 'FAVORITE'
+--    WHEN MARKET = 'h2h' AND PRICE >= -120 
+--        AND MARKET = 'h2h' AND PRICE <= 120 THEN 'SPLIT'
+--    WHEN MARKET = 'h2h' AND PRICE > 120 THEN 'UNDERDOG'
+--    ELSE 
+--    NULL
+--END AS TEAM_FAVORED  
 
 
 FROM (
@@ -61,29 +55,17 @@ FROM (
         'HOME' AS LOCATION,
 
         B.VALUE:key::VARCHAR AS BOOKMAKER,
-        --M.VALUE:key::VARCHAR AS MARKET,
+        M.VALUE:key::VARCHAR AS MARKET,
+        O.VALUE:name::STRING AS OUTCOME,
 
-        --O.VALUE:name::VARCHAR AS TEAM,
-        --O.VALUE:price::NUMBER AS ODDS,
-            CASE 
-                WHEN M.VALUE:outcomes[0]:name::VARCHAR = PAYLOAD:away_team 
-                THEN M.VALUE:outcomes[0]:price::NUMBER
-                ELSE M.VALUE:outcomes[1]:price::NUMBER
-            END AS TEAM_ODDS,
-    
+        O.VALUE:point::FLOAT AS POINT,
+        O.VALUE:price::FLOAT AS PRICE
 
-
-        M.VALUE:outcomes[0]:name::VARCHAR AS TEAN_1,
-        M.VALUE:outcomes[0]:price::NUMBER AS TEAM_1_ODDS,
-        M.VALUE:outcomes[1]:name::VARCHAR AS UNDERDOG_TEAM,
-        M.VALUE:outcomes[1]:price::NUMBER AS UNDERDOG_ODDS
     FROM {{ source('raw','nfl_odds_json') }},
     LATERAL FLATTEN(INPUT => PAYLOAD:bookmakers) B,
     LATERAL FLATTEN(INPUT => B.VALUE:markets) M,
     LATERAL FLATTEN(INPUT => M.VALUE:outcomes) O
 
-    WHERE M.VALUE:key::VARCHAR = 'h2h'
-
 ) A
 
-ORDER BY TEAM, BOOKMAKER
+ORDER BY GAME_TIME DESC, TEAM, BOOKMAKER, MARKET, OUTCOME

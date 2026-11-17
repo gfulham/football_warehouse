@@ -1,20 +1,50 @@
 SELECT  
-dt.TEAM_KEY,
-stg_t.TEAM,
-dt.TEAM_ABBREVIATION,
-dt.CITY,
-dt.STATE,
-stg_t.LOCATION,
-stg_t.GAME_ID,
-stg_t.GAME_TIME,
-YEAR(GAME_TIME) AS YEAR,
-WEEKOFYEAR(DATEADD(day,-1, GAME_TIME)) -36 AS NFL_WEEK_NUMBER,
-stg_t.OPPONENT,
-stg_t.BOOKMAKER,
-stg_t.TEAM_FAVORED,
-stg_t.TEAM_ODDS
-FROM
-{{ ref('stg_team_odds') }} stg_t
+    TEAM,
+    OPPONENT,
+    BOOKMAKER,
+    LOCATION,
+    GAME_ID,
+    GAME_TIME,
+    -- Moneyline
+    MAX(CASE
+        WHEN MARKET = 'h2h' AND OUTCOME = TEAM
+        THEN PRICE
+    END) AS MONEYLINE,
 
-LEFT JOIN {{ ref('dim_nfl_teams')}} dt 
-    ON dt.team = stg_t.team
+    -- Spread
+    MAX(CASE
+        WHEN MARKET = 'spreads' AND OUTCOME = TEAM
+        THEN POINT
+    END) AS SPREAD,
+
+    MAX(CASE
+        WHEN MARKET = 'spreads' AND OUTCOME = TEAM
+        THEN PRICE
+    END) AS SPREAD_ODDS,
+
+    -- Over/Under
+    MAX(CASE
+        WHEN MARKET = 'totals' AND OUTCOME = 'Over'
+        THEN POINT
+    END) AS OVER_UNDER,
+
+    MAX(CASE
+        WHEN MARKET = 'totals' AND OUTCOME = 'Over'
+        THEN PRICE
+    END) AS OVER_ODDS,
+
+    MAX(CASE
+        WHEN MARKET = 'totals' AND OUTCOME = 'Under'
+        THEN PRICE
+    END) AS UNDER_ODDS
+
+FROM 
+    {{ ref('stg_team_odds') }}
+
+GROUP BY
+    TEAM,
+    OPPONENT,
+    BOOKMAKER,
+    LOCATION,
+    GAME_ID,
+    GAME_TIME
